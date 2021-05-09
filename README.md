@@ -93,17 +93,69 @@ CREATE TABLE "salaries" (
 ---
 ## Analysis
 The following solutions can be found in the saved [query file](/EmployeeSQL/Script/employee_query.sql).
-1. Required data from the employees and salaries tables
+1. Required data from the employees and salaries tables via a join.
 ```sql
 SELECT e.emp_no, e.last_name, e.first_name, e.sex, s.salary
 FROM salaries s
 LEFT JOIN employees e
 ON e.emp_no = s.emp_no;
 ```
-2. Used a WHERE statment.
+2. Used a __WHERE__ statment.
 ```sql
 SELECT first_name, last_name, hire_date
 FROM employees
 WHERE hire_date BETWEEN '1986-01-01' AND '1986-12-31';
 ```
-3.
+3. Required data from 3 tables which meant multiple joins.
+```sql
+SELECT dm.dept_no, d.dept_name, e.emp_no, e.last_name, e.first_name
+FROM dept_manager dm
+INNER JOIN departments d
+ON dm.dept_no = d.dept_no
+INNER JOIN employees e
+ON dm.emp_no = e.emp_no;
+```
+4. Also required the used of double joins like #3.
+```sql
+SELECT de.emp_no, e.last_name, e.first_name, d.dept_name
+FROM dept_emp de
+INNER JOIN employees e
+ON e.emp_no = de.emp_no
+INNER JOIN departments d
+ON d.dept_no = de.dept_no;
+```
+5. Was done using a __Wildcard__ function.
+```sql
+SELECT first_name, last_name, sex
+FROM employees
+WHERE first_name = 'Hercules'
+AND last_name LIKE 'B%';
+```
+6. Comnbination of multiple joins wtih a __WHERE__ statement
+```sql
+SELECT de.emp_no, e.last_name, e.first_name, d.dept_name
+FROM dept_emp de
+INNER JOIN employees e
+ON e.emp_no = de.emp_no
+INNER JOIN departments d
+ON d.dept_no = de.dept_no
+WHERE d.dept_name = 'Sales';
+```
+7. Similar to #6 except the __WHERE__ statement had 2 clauses separated by an __OR__ statement
+```sql
+SELECT de.emp_no, e.last_name, e.first_name, d.dept_name
+FROM dept_emp de
+INNER JOIN employees e
+ON e.emp_no = de.emp_no
+INNER JOIN departments d
+ON d.dept_no = de.dept_no
+WHERE d.dept_name = 'Sales'
+OR d.dept_name = 'Development';
+```
+8. A __COUNT__ aggregate funciton was used in combination with a __GROUP BY__ and an __ORDER BY__
+```sql
+SELECT last_name, COUNT(last_name) AS "frequency count"
+FROM employees
+GROUP BY last_name
+ORDER BY COUNT(last_name) DESC;
+```

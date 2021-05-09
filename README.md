@@ -31,11 +31,79 @@ Once the database was completed, the following analysis had to be perfomed:
 - In descending order, list the frequency count of employee last names, i.e., how many employees share each last name.
 
 ---
-## ERD (Entity Relationship Diagram)
+## ERD Modeling (Entity Relationship Diagram)
 
 ![ERD Diagram](/EmployeeSQL/ERD/QuickDBD-export.png)
 
 > [Quick Database Diagrams](https://app.quickdatabasediagrams.com/#/d/XYuyVN) was used in order to create the ERD shown above
 
 ---
+## Engineering
+
+Using the ERD above, a [schema](/EmployeeSQL/Script/employee_schema.sql) was built using the following code:
+
+```sql
+CREATE TABLE "titles" (
+    "title_id" VARCHAR   NOT NULL,
+    "title" VARCHAR   NOT NULL,
+    PRIMARY KEY ("title_id")
+);
+
+CREATE TABLE "employees" (
+    "emp_no" INT   NOT NULL,
+    "emp_title" VARCHAR   NOT NULL,
+    "birth_data" date   NOT NULL,
+    "first_name" VARCHAR   NOT NULL,
+    "last_name" VARCHAR   NOT NULL,
+    "sex" VARCHAR   NOT NULL,
+    "hire_date" date   NOT NULL,
+	FOREIGN KEY ("emp_title") REFERENCES titles ("title_id"),
+	PRIMARY KEY ("emp_no")
+);
+
+CREATE TABLE "departments" (
+    "dept_no" VARCHAR   NOT NULL,
+    "dept_name" VARCHAR   NOT NULL,
+    PRIMARY KEY ("dept_no")
+);
+
+CREATE TABLE "dept_emp" (
+    "emp_no" INT   NOT NULL,
+    "dept_no" VARCHAR   NOT NULL,
+	FOREIGN KEY ("dept_no") REFERENCES departments ("dept_no"),
+	FOREIGN KEY ("emp_no") REFERENCES employees ("emp_no"),
+    PRIMARY KEY ("emp_no", "dept_no")
+);
+
+CREATE TABLE "dept_manager" (
+    "dept_no" VARCHAR   NOT NULL,
+    "emp_no" INT   NOT NULL,
+	FOREIGN KEY ("dept_no") REFERENCES departments ("dept_no"),
+	FOREIGN KEY ("emp_no") REFERENCES employees ("emp_no"),
+    PRIMARY KEY ("dept_no", "emp_no")
+);
+
+CREATE TABLE "salaries" (
+    "emp_no" INT   NOT NULL,
+    "salary" INT   NOT NULL,
+	FOREIGN KEY ("emp_no") REFERENCES employees ("emp_no"),
+    PRIMARY KEY ("emp_no")
+);
+```
+---
 ## Analysis
+The following solutions can be found in the saved [query file](/EmployeeSQL/Script/employee_query.sql).
+1. Required data from the employees and salaries tables
+```sql
+SELECT e.emp_no, e.last_name, e.first_name, e.sex, s.salary
+FROM salaries s
+LEFT JOIN employees e
+ON e.emp_no = s.emp_no;
+```
+2. Used a WHERE statment.
+```sql
+SELECT first_name, last_name, hire_date
+FROM employees
+WHERE hire_date BETWEEN '1986-01-01' AND '1986-12-31';
+```
+3.

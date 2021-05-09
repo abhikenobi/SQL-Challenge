@@ -37,3 +37,5 @@ Once the database was completed, the following analysis had to be perfomed:
 
 > [Quick Database Diagrams](https://app.quickdatabasediagrams.com/#/d/XYuyVN) was used in order to create the ERD shown above
 
+---
+## Analysis
